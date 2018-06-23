@@ -6,14 +6,23 @@ var WIZARD_COAT = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161
 var WIZARD_EYES = ['black', 'red', 'blue', 'yellow', 'green'];
 var WIZARD_NUMBER = 4;
 
-var userDialog = document.querySelector('.setup');
+function getDomElements() {
+  return {
+    setup: document.querySelector('.setup'),
+    template: document.querySelector('#similar-wizard-template'),
+    similarList: document.querySelector('.setup-similar-list')
+  };
+}
+
+var dom = getDomElements();
+var userDialog = dom.setup;
+
 userDialog.classList.remove('hidden');
 
-var similarListElement = userDialog.querySelector('.setup-similar-list');
+var similarListElement = dom.similarList;
 
-var similarWizardTemplate = document.querySelector('#similar-wizard-template')
-.content
-.querySelector('.setup-similar-item');
+var template = dom.template.content;
+var similarWizardTemplate = template.querySelector('.setup-similar-item');
 
 var getRandomArrayElement = function (array) {
   var rand = Math.floor(Math.random() * array.length);
@@ -41,17 +50,26 @@ var getWizardArray = function (wizardNumber) {
 };
 
 //  создание массива волшебников
-var WizardArray = getWizardArray(WIZARD_NUMBER);
+var wizardArray = getWizardArray(WIZARD_NUMBER);
+
+function getTemplatesElement(parent) {
+  return {
+    name: parent.querySelector('.setup-similar-label'),
+    coat: parent.querySelector('.wizard-coat'),
+    eyes: parent.querySelector('.wizard-eyes')
+  };
+}
 
 //  функция отрисовки волшебника
 var renderWizard = function (wizard) {
-  var wizardElement = similarWizardTemplate.cloneNode(true);
+  var wizardItem = similarWizardTemplate.cloneNode(true);
+  var wizardElement = getTemplatesElement(wizardItem);
 
-  wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-  wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
-  wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
+  wizardElement.name.textContent = wizard.name;
+  wizardElement.coat.style.fill = wizard.coatColor;
+  wizardElement.eyes.style.fill = wizard.eyesColor;
 
-  return wizardElement;
+  return wizardItem;
 };
 
 //  функция отрисовки всех волшебников
@@ -65,6 +83,6 @@ var renderWizards = function (wizards) {
 };
 
 //  отрисовка волшебников
-renderWizards(WizardArray);
+renderWizards(wizardArray);
 
 userDialog.querySelector('.setup-similar').classList.remove('hidden');
