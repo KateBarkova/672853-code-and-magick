@@ -94,19 +94,15 @@ var ENTER_KEYCODE = 13;
 var setup = document.querySelector('.setup');
 var setupOpen = document.querySelector('.setup-open');
 var setupClose = setup.querySelector('.setup-close');
-// var inputUserName = setup.querySelector('.setup-user-name');
 
 var onPopupEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
-    closePopup();
+    var activeElement = document.activeElement;
+    if (activeElement.classList.value !== 'setup-user-name') {
+      closePopup();
+    }
   }
 };
-
-// inputUserName.addEventListener ('onFocus', function() {
-//   if (evt.keyCode === ESC_KEYCODE) {
-//     document.removeEventListener('keydown', onPopupEscPress);
-//   }
-// })
 
 var openPopup = function () {
   setup.classList.remove('hidden');
@@ -119,9 +115,7 @@ var closePopup = function () {
   document.removeEventListener('keydown', onPopupEscPress);
 };
 
-setupOpen.addEventListener('click', function () {
-  openPopup();
-});
+setupOpen.addEventListener('click', openPopup);
 
 setupOpen.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
@@ -129,9 +123,7 @@ setupOpen.addEventListener('keydown', function (evt) {
   }
 });
 
-setupClose.addEventListener('click', function () {
-  closePopup();
-});
+setupClose.addEventListener('click', closePopup);
 
 setupClose.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
@@ -143,7 +135,7 @@ setupClose.addEventListener('keydown', function (evt) {
 
 var userNameInput = setup.querySelector('.setup-user-name');
 
-userNameInput.addEventListener('invalid', function () {
+var userNameValidity = function () {
   if (userNameInput.validity.tooShort) {
     userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
   } else if (userNameInput.validity.tooLong) {
@@ -152,6 +144,20 @@ userNameInput.addEventListener('invalid', function () {
     userNameInput.setCustomValidity('Обязательное поле');
   } else {
     userNameInput.setCustomValidity('');
+  }
+};
+
+
+userNameInput.addEventListener('invalid', function () {
+  userNameValidity();
+});
+
+userNameInput.addEventListener('input', function (evt) {
+  var target = evt.target;
+  if (target.value.length < 2) {
+    target.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  } else {
+    target.setCustomValidity('');
   }
 });
 
