@@ -135,30 +135,25 @@ setupClose.addEventListener('keydown', function (evt) {
 
 var userNameInput = setup.querySelector('.setup-user-name');
 
-var userNameValidity = function () {
-  if (userNameInput.validity.tooShort) {
-    userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
-  } else if (userNameInput.validity.tooLong) {
-    userNameInput.setCustomValidity('Имя не должно превышать 25-ти символов');
-  } else if (userNameInput.validity.valueMissing) {
-    userNameInput.setCustomValidity('Обязательное поле');
+var checkUserNameValidity = function (element) {
+  if (element.validity.tooShort) {
+    element.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  } else if (element.validity.tooLong) {
+    element.setCustomValidity('Имя не должно превышать 25-ти символов');
+  } else if (element.validity.valueMissing) {
+    element.setCustomValidity('Обязательное поле');
   } else {
-    userNameInput.setCustomValidity('');
+    element.setCustomValidity('');
   }
 };
 
 
 userNameInput.addEventListener('invalid', function () {
-  userNameValidity();
+  checkUserNameValidity(userNameInput);
 });
 
-userNameInput.addEventListener('input', function (evt) {
-  var target = evt.target;
-  if (target.value.length < 2) {
-    target.setCustomValidity('Имя должно состоять минимум из 2-х символов');
-  } else {
-    target.setCustomValidity('');
-  }
+userNameInput.addEventListener('input', function () {
+  checkUserNameValidity(userNameInput);
 });
 
 // Изменение цвета мантии персонажа по нажатию
@@ -210,14 +205,6 @@ var changeFireballColor = function () {
   InputFireball.value = fireballColor;
 };
 
-setupWizardCoat.addEventListener('click', function () {
-  changeCoatColor();
-});
-
-setupWizardEyes.addEventListener('click', function () {
-  changeEyesColor();
-});
-
-setupFireball.addEventListener('click', function () {
-  changeFireballColor();
-});
+setupWizardCoat.addEventListener('click', changeCoatColor);
+setupWizardEyes.addEventListener('click', changeEyesColor);
+setupFireball.addEventListener('click', changeFireballColor);
