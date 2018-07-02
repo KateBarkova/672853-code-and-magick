@@ -15,8 +15,8 @@
         name: parent.querySelector('.setup-similar-label'),
         coat: parent.querySelector('.wizard-coat'),
         eyes: parent.querySelector('.wizard-eyes')
-      }
+      };
     }
-  }
+  };
 
 })();
