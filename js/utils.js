@@ -4,8 +4,7 @@
 
   window.utils = {
     getRandomArrayElement: function (array) {
-      var rand = Math.floor(Math.random() * array.length);
-      return rand;
+      return Math.floor(Math.random() * array.length);
     }
   };
 

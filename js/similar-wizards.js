@@ -9,7 +9,7 @@
   var WIZARD_NUMBER = 4;
 
 
-  var dom = window.dom.getDomElements();
+  var dom = window.dom.getElements();
   var userDialog = dom.setup;
 
   var similarListElement = dom.similarList;

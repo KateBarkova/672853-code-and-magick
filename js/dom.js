@@ -2,7 +2,7 @@
 
 (function () {
   window.dom = {
-    getDomElements: function () {
+    getElements: function () {
       return {
         setup: document.querySelector('.setup'),
         template: document.querySelector('#similar-wizard-template'),
