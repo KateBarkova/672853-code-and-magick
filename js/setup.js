@@ -1,220 +1,82 @@
 'use strict';
 
-var WIZARD_NAMES = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
-var WIZARD_SURNAMES = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
-var WIZARD_COAT = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
-var WIZARD_EYES = ['black', 'red', 'blue', 'yellow', 'green'];
-var WIZARD_NUMBER = 4;
+(function () {
 
-function getDomElements() {
-  return {
-    setup: document.querySelector('.setup'),
-    template: document.querySelector('#similar-wizard-template'),
-    similarList: document.querySelector('.setup-similar-list')
-  };
-}
+  // валидация поля имени персонажа
+  var setup = document.querySelector('.setup');
+  var userNameInput = setup.querySelector('.setup-user-name');
 
-var dom = getDomElements();
-var userDialog = dom.setup;
-
-// userDialog.classList.remove('hidden');
-
-var similarListElement = dom.similarList;
-
-var template = dom.template.content;
-var similarWizardTemplate = template.querySelector('.setup-similar-item');
-
-var getRandomArrayElement = function (array) {
-  var rand = Math.floor(Math.random() * array.length);
-  return rand;
-};
-
-//  создание одного волшебника (объект)
-var createWizard = function () {
-  var wizard = {};
-  wizard.name = WIZARD_NAMES[getRandomArrayElement(WIZARD_NAMES)] + ' ' + WIZARD_SURNAMES[getRandomArrayElement(WIZARD_SURNAMES)];
-  wizard.coatColor = WIZARD_COAT[getRandomArrayElement(WIZARD_COAT)];
-  wizard.eyesColor = WIZARD_EYES[getRandomArrayElement(WIZARD_EYES)];
-
-  return wizard;
-};
-
-//  функция создания массива волшебников
-var getWizardArray = function (wizardNumber) {
-  var wizards = [];
-  for (var i = 0; i < wizardNumber; i++) {
-    wizards[i] = createWizard();
-  }
-
-  return wizards;
-};
-
-//  создание массива волшебников
-var wizardArray = getWizardArray(WIZARD_NUMBER);
-
-function getTemplatesElement(parent) {
-  return {
-    name: parent.querySelector('.setup-similar-label'),
-    coat: parent.querySelector('.wizard-coat'),
-    eyes: parent.querySelector('.wizard-eyes')
-  };
-}
-
-//  функция отрисовки волшебника
-var renderWizard = function (wizard) {
-  var wizardItem = similarWizardTemplate.cloneNode(true);
-  var wizardElement = getTemplatesElement(wizardItem);
-
-  wizardElement.name.textContent = wizard.name;
-  wizardElement.coat.style.fill = wizard.coatColor;
-  wizardElement.eyes.style.fill = wizard.eyesColor;
-
-  return wizardItem;
-};
-
-//  функция отрисовки всех волшебников
-var renderWizards = function (wizards) {
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < wizards.length; i++) {
-    fragment.appendChild(renderWizard(wizards[i]));
-  }
-  similarListElement.appendChild(fragment);
-
-};
-
-//  отрисовка волшебников
-renderWizards(wizardArray);
-
-userDialog.querySelector('.setup-similar').classList.remove('hidden');
-
-// Открытие-закрытие окна
-
-var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
-var setup = document.querySelector('.setup');
-var setupOpen = document.querySelector('.setup-open');
-var setupClose = setup.querySelector('.setup-close');
-
-var onPopupEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    var activeElement = document.activeElement;
-    if (activeElement.classList.value !== 'setup-user-name') {
-      closePopup();
+  var checkUserNameValidity = function (element) {
+    if (element.validity.tooShort) {
+      element.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+    } else if (element.validity.tooLong) {
+      element.setCustomValidity('Имя не должно превышать 25-ти символов');
+    } else if (element.validity.valueMissing) {
+      element.setCustomValidity('Обязательное поле');
+    } else {
+      element.setCustomValidity('');
     }
-  }
-};
+  };
 
-var openPopup = function () {
-  setup.classList.remove('hidden');
-  document.addEventListener('keydown', onPopupEscPress);
+  userNameInput.addEventListener('invalid', function () {
+    checkUserNameValidity(userNameInput);
+  });
 
-};
+  userNameInput.addEventListener('input', function () {
+    checkUserNameValidity(userNameInput);
+  });
 
-var getStartPosition = function () {
-  var START_TOP = 80;
-  var START_LEFT = 691;
+  // Изменение цвета мантии персонажа по нажатию
+  var COAT_COLOR = [
+    'rgb(101, 137, 164)',
+    'rgb(241, 43, 107)',
+    'rgb(146, 100, 161)',
+    'rgb(56, 159, 117)',
+    'rgb(215, 210, 55)',
+    'rgb(0, 0, 0)'
+  ];
 
-  var setupDialogElement = document.querySelector('.setup');
-  setupDialogElement.style.top = START_TOP + 'px';
-  setupDialogElement.style.left = START_LEFT + 'px';
-};
+  var EYES_COLOR = [
+    'black',
+    'red',
+    'blue',
+    'yellow',
+    'green'
+  ];
 
-var closePopup = function () {
-  setup.classList.add('hidden');
-  document.removeEventListener('keydown', onPopupEscPress);
-  getStartPosition();
-};
+  var FIREBALL_COLOR = [
+    '#ee4830',
+    '#30a8ee',
+    '#5ce6c0',
+    '#e848d5',
+    '#e6e848',
+  ];
 
-setupOpen.addEventListener('click', openPopup);
+  var setupWizardCoat = setup.querySelector('.wizard-coat');
+  var setupWizardEyes = setup.querySelector('.wizard-eyes');
+  var setupFireball = setup.querySelector('.setup-fireball-wrap');
+  var inputWizardCoat = setup.querySelector('input[name=coat-color]');
+  var inputWizardEyes = setup.querySelector('input[name=eyes-color]');
+  var inputFireball = setup.querySelector('input[name=fireball-color]');
 
-setupOpen.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    openPopup();
-  }
-});
+  var changeCoatColor = function () {
+    var coatColor = COAT_COLOR[window.utils.getRandomArrayElement(COAT_COLOR)];
+    setupWizardCoat.style.fill = coatColor;
+    inputWizardCoat.value = coatColor;
+  };
+  var changeEyesColor = function () {
+    var eyesColor = EYES_COLOR[window.utils.getRandomArrayElement(EYES_COLOR)];
+    setupWizardEyes.style.fill = eyesColor;
+    inputWizardEyes.value = eyesColor;
+  };
+  var changeFireballColor = function () {
+    var fireballColor = FIREBALL_COLOR[window.utils.getRandomArrayElement(FIREBALL_COLOR)];
+    setupFireball.style.background = fireballColor;
+    inputFireball.value = fireballColor;
+  };
 
-setupClose.addEventListener('click', closePopup);
+  setupWizardCoat.addEventListener('click', changeCoatColor);
+  setupWizardEyes.addEventListener('click', changeEyesColor);
+  setupFireball.addEventListener('click', changeFireballColor);
 
-setupClose.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    closePopup();
-  }
-});
-
-// валидация поля имени персонажа
-
-var userNameInput = setup.querySelector('.setup-user-name');
-
-var checkUserNameValidity = function (element) {
-  if (element.validity.tooShort) {
-    element.setCustomValidity('Имя должно состоять минимум из 2-х символов');
-  } else if (element.validity.tooLong) {
-    element.setCustomValidity('Имя не должно превышать 25-ти символов');
-  } else if (element.validity.valueMissing) {
-    element.setCustomValidity('Обязательное поле');
-  } else {
-    element.setCustomValidity('');
-  }
-};
-
-
-userNameInput.addEventListener('invalid', function () {
-  checkUserNameValidity(userNameInput);
-});
-
-userNameInput.addEventListener('input', function () {
-  checkUserNameValidity(userNameInput);
-});
-
-// Изменение цвета мантии персонажа по нажатию
-var COAT_COLOR = [
-  'rgb(101, 137, 164)',
-  'rgb(241, 43, 107)',
-  'rgb(146, 100, 161)',
-  'rgb(56, 159, 117)',
-  'rgb(215, 210, 55)',
-  'rgb(0, 0, 0)'
-];
-
-var EYES_COLOR = [
-  'black',
-  'red',
-  'blue',
-  'yellow',
-  'green'
-];
-
-var FIREBALL_COLOR = [
-  '#ee4830',
-  '#30a8ee',
-  '#5ce6c0',
-  '#e848d5',
-  '#e6e848',
-];
-
-var setupWizardCoat = setup.querySelector('.wizard-coat');
-var setupWizardEyes = setup.querySelector('.wizard-eyes');
-var setupFireball = setup.querySelector('.setup-fireball-wrap');
-var inputWizardCoat = setup.querySelector('input[name=coat-color]');
-var inputWizardEyes = setup.querySelector('input[name=eyes-color]');
-var inputFireball = setup.querySelector('input[name=fireball-color]');
-
-var changeCoatColor = function () {
-  var coatColor = COAT_COLOR[getRandomArrayElement(COAT_COLOR)];
-  setupWizardCoat.style.fill = coatColor;
-  inputWizardCoat.value = coatColor;
-};
-var changeEyesColor = function () {
-  var eyesColor = EYES_COLOR[getRandomArrayElement(EYES_COLOR)];
-  setupWizardEyes.style.fill = eyesColor;
-  inputWizardEyes.value = eyesColor;
-};
-var changeFireballColor = function () {
-  var fireballColor = FIREBALL_COLOR[getRandomArrayElement(FIREBALL_COLOR)];
-  setupFireball.style.background = fireballColor;
-  inputFireball.value = fireballColor;
-};
-
-setupWizardCoat.addEventListener('click', changeCoatColor);
-setupWizardEyes.addEventListener('click', changeEyesColor);
-setupFireball.addEventListener('click', changeFireballColor);
+})();
