@@ -79,4 +79,21 @@
   setupWizardEyes.addEventListener('click', changeEyesColor);
   setupFireball.addEventListener('click', changeFireballColor);
 
+  var onSuccessLoad = function (evt) {
+    return function() {
+      evt.preventDefault(evt);
+      setup.classList.add('hidden');
+    }
+  }
+
+  var onFormSybmit = function (evt) {
+    // evt.preventDefault();
+    window.backend.upload(new FormData(form), onSuccessLoad(evt), window.backend.onError);
+  }
+
+  var form = setup.querySelector('.setup-wizard-form');
+
+  form.addEventListener('submit', onFormSybmit);
+
+
 })();
