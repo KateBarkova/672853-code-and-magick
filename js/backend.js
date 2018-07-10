@@ -1,9 +1,10 @@
 'use strict';
 
 (function () {
-  var LOAD_TIMEOUT = 10000;
+  var LOAD_TIMEOUT = 3000;
   var ERROR_TIMEOUT = 3000;
-  var URL = 'https://js.dump.academy/code-and-magick/data';
+  var URLLoad = 'https://js.dump.academy/code-and-magick/data';
+  var URLUpload = 'https://js.dump.academy/code-and-magick';
 
   function onXhrLoad(xhr, onLoad, onError) {
     return function () {
@@ -38,6 +39,11 @@
     };
   }
 
+  function removeErrorMessage() {
+    var errorMessage = document.querySelector('.error-message');
+    errorMessage.remove();
+  }
+
   window.backend = {
     load: function (onLoad, onError) {
 
@@ -49,12 +55,12 @@
       xhr.addEventListener('error', onXhrError(onError));
       xhr.addEventListener('timeout', onXhrTimeout(onError, xhr));
 
-      xhr.open('GET', URL);
+      xhr.open('GET', URLLoad);
       xhr.send();
     },
 
     upload: function (data, onLoad, onError) {
-      var URL = 'https://js.dump.academy/code-and-magick';
+
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
@@ -62,27 +68,24 @@
       xhr.addEventListener('error', onXhrError(onError));
       xhr.addEventListener('timeout', onXhrTimeout(onError, xhr));
 
-      xhr.open('POST', URL);
+      xhr.open('POST', URLUpload);
       xhr.send(data);
     },
 
     onError: function (message) {
-      var newElement = document.createElement('div');
-      newElement.className = 'error-message';
-      newElement.textContent = message;
+      var node = document.createElement('div');
+      node.classList.add('error-message');
+      node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+      node.style.position = 'absolute';
+      node.style.left = 0;
+      node.style.right = 0;
+      node.style.fontSize = '30px';
 
-      var dom = window.dom.getElements();
-      var pins = dom.pins;
-      pins.appendChild(newElement);
+      node.textContent = message;
+      document.body.insertAdjacentElement('afterbegin', node);
 
-      var errorMessage = pins.querySelector('.error-message');
-
-      if (errorMessage) {
+      if (message) {
         setTimeout(removeErrorMessage, ERROR_TIMEOUT);
-      }
-
-      function removeErrorMessage() {
-        errorMessage.remove();
       }
     }
   };
