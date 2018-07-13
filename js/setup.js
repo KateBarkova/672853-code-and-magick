@@ -52,9 +52,7 @@
   };
 
   var onUserNameInvalid = function () {
-    return function () {
-      checkUserNameValidity(inputUserName);
-    };
+    checkUserNameValidity(inputUserName);
   };
 
   var changeCoatColor = function () {
@@ -87,20 +85,28 @@
     setup.classList.add('hidden');
   };
 
-  var onFormSybmit = function (evt) {
+  var onFormSubmit = function (evt) {
     evt.preventDefault();
     window.backend.upload(new FormData(form), onSuccessLoad, window.backend.onError);
   };
 
-  window.validateSetup = function () {
-    inputUserName.addEventListener('invalid', onUserNameInvalid(inputUserName));
-    inputUserName.addEventListener('input', onUserNameInvalid(inputUserName));
-
-    setupWizardCoat.addEventListener('click', onCoatClick);
-    setupWizardEyes.addEventListener('click', onEyesClick);
-    setupFireball.addEventListener('click', onFireballClick);
-
-    form.addEventListener('submit', onFormSybmit);
+  window.setup = {
+    validate: function () {
+      inputUserName.addEventListener('invalid', onUserNameInvalid);
+      inputUserName.addEventListener('input', onUserNameInvalid);
+      setupWizardCoat.addEventListener('click', onCoatClick);
+      setupWizardEyes.addEventListener('click', onEyesClick);
+      setupFireball.addEventListener('click', onFireballClick);
+      form.addEventListener('submit', onFormSubmit);
+    },
+    stopValidate: function () {
+      inputUserName.removeEventListener('invalid', onUserNameInvalid);
+      inputUserName.removeEventListener('input', onUserNameInvalid);
+      setupWizardCoat.removeEventListener('click', onCoatClick);
+      setupWizardEyes.removeEventListener('click', onEyesClick);
+      setupFireball.removeEventListener('click', onFireballClick);
+      form.removeEventListener('submit', onFormSubmit);
+    }
   };
 
 })();

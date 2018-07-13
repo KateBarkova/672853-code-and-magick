@@ -3,18 +3,9 @@
 (function () {
   var LOAD_TIMEOUT = 3000;
   var ERROR_TIMEOUT = 3000;
-  var URLLoad = 'https://js.dump.academy/code-and-magick/data';
   var URLUpload = 'https://js.dump.academy/code-and-magick';
-
-  function onXhrLoad(xhr, onLoad, onError) {
-    return function () {
-      if (xhr.status === 200) {
-        onLoad(xhr.response);
-      } else {
-        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
-      }
-    };
-  }
+  var DATA_URL = 'https://js.dump.academy/code-and-magick/data';
+  var CALLBACK_NAME = 'backend.callback';
 
   function onXhrError(onError) {
     return function () {
@@ -39,24 +30,26 @@
     };
   }
 
+  function onLoadError() {
+    window.backend.onError('Произошла ошибка соединения');
+  }
+
   function removeErrorMessage() {
     var errorMessage = document.querySelector('.error-message');
     errorMessage.remove();
   }
 
   window.backend = {
-    load: function (onLoad, onError) {
+    callback: function (data) {
+      window.renderWizards(data);
+    },
 
-      var xhr = new XMLHttpRequest();
+    load: function () {
+      var loader = document.createElement('script');
+      loader.src = DATA_URL + '?callback=' + CALLBACK_NAME;
 
-      xhr.responseType = 'json';
-
-      xhr.addEventListener('load', onXhrLoad(xhr, onLoad, onError));
-      xhr.addEventListener('error', onXhrError(onError));
-      xhr.addEventListener('timeout', onXhrTimeout(onError, xhr));
-
-      xhr.open('GET', URLLoad);
-      xhr.send();
+      loader.addEventListener('error', onLoadError);
+      document.body.append(loader);
     },
 
     upload: function (data, onLoad, onError) {
@@ -75,7 +68,10 @@
     onError: function (message) {
       var node = document.createElement('div');
       node.classList.add('error-message');
-      node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+      node.style.zIndex = '100';
+      node.style.margin = '0 auto';
+      node.style.textAlign = 'center';
+      node.style.backgroundColor = 'red';
       node.style.position = 'absolute';
       node.style.left = 0;
       node.style.right = 0;
