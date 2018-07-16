@@ -4,7 +4,7 @@
   var setupDialogElement = document.querySelector('.setup');
   var dialogHandler = setupDialogElement.querySelector('.upload');
 
-  dialogHandler.addEventListener('mousedown', function (evt) {
+  var onMouseDown = function (evt) {
     evt.preventDefault();
 
     var startCoords = {
@@ -51,6 +51,15 @@
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-  });
+  };
+
+  window.dialog = {
+    handler: function () {
+      dialogHandler.addEventListener('mousedown', onMouseDown);
+    },
+    removeHandler: function () {
+      dialogHandler.removeEventListener('mousedown', onMouseDown);
+    }
+  };
 
 })();
