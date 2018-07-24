@@ -1,26 +1,25 @@
 'use strict';
-
 (function () {
   var LOAD_TIMEOUT = 3000;
   var ERROR_TIMEOUT = 3000;
-  var URLUpload = 'https://js.dump.academy/code-and-magick';
+  var URL_UPLOAD = 'https://js.dump.academy/code-and-magick';
   var DATA_URL = 'https://js.dump.academy/code-and-magick/data';
-  var CALLBACK_NAME = 'backend.callback';
+  var CALLBACK_NAME = 'callback';
 
-  function onXhrError(onError) {
+  var onXhrError = function (onError) {
     return function () {
       onError('Произошла ошибка соединения');
     };
   }
 
-  function onXhrTimeout(onError, xhr) {
+  var onXhrTimeout = function (onError, xhr) {
     return function () {
       xhr.timeout = LOAD_TIMEOUT;
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     };
   }
 
-  function onXhrUpLoad(xhr, onLoad, onError) {
+  var onXhrUpLoad = function (xhr, onLoad, onError) {
     return function () {
       if (xhr.status === 200) {
         onLoad();
@@ -30,20 +29,21 @@
     };
   }
 
-  function onLoadError() {
+  var onLoadError = function () {
     window.backend.onError('Произошла ошибка соединения');
   }
 
-  function removeErrorMessage() {
+  var removeErrorMessage = function () {
     var errorMessage = document.querySelector('.error-message');
     errorMessage.remove();
   }
 
-  window.backend = {
-    callback: function (data) {
-      window.renderWizards(data);
-    },
+  window.callback = function(data) {
+    window.wizards = data;
+    window.renderWizards(wizards);
+  };
 
+  window.backend = {
     load: function () {
       var loader = document.createElement('script');
       loader.src = DATA_URL + '?callback=' + CALLBACK_NAME;
@@ -61,7 +61,7 @@
       xhr.addEventListener('error', onXhrError(onError));
       xhr.addEventListener('timeout', onXhrTimeout(onError, xhr));
 
-      xhr.open('POST', URLUpload);
+      xhr.open('POST', URL_UPLOAD);
       xhr.send(data);
     },
 

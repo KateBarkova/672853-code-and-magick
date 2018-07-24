@@ -2,8 +2,6 @@
 
 (function () {
   // Открытие-закрытие окна
-  var START_TOP = 80;
-  var START_LEFT = 691;
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
   var setup = document.querySelector('.setup');
@@ -33,8 +31,8 @@
   };
 
   var getStartPosition = function () {
-    setup.style.top = START_TOP + 'px';
-    setup.style.left = START_LEFT + 'px';
+    setup.style.top = '';
+    setup.style.left = '';
   };
 
   var closePopup = function () {
