@@ -57,19 +57,18 @@
 
   var coatColor;
   var eyesColor;
-  var wizards = window.wizards;
 
-  var getRank = function (wizard) {
+  var getRank = function (wizardItem) {
     var rank = 0;
 
-    if (wizard.colorCoat === coatColor) {
+    if (wizardItem.colorCoat === coatColor) {
       rank += 2;
     }
-    if (wizard.colorEyes === eyesColor) {
+    if (wizardItem.colorEyes === eyesColor) {
       rank += 1;
     }
     return rank;
-  }
+  };
 
   var namesComparator = function (left, right) {
     if (left > right) {
@@ -79,7 +78,7 @@
     } else {
       return 0;
     }
-  }
+  };
 
   var updateWizards = function () {
     window.renderWizards(window.wizards.sort(function (left, right) {
@@ -89,16 +88,16 @@
       }
       return rankDiff;
     }));
-  }
+  };
 
   var changeCoatColor = function () {
-    var coatColor = COAT_COLOR[window.utils.getRandomArrayElement(COAT_COLOR)];
+    coatColor = COAT_COLOR[window.utils.getRandomArrayElement(COAT_COLOR)];
     setupWizardCoat.style.fill = coatColor;
     inputWizardCoat.value = coatColor;
     return coatColor;
   };
   var changeEyesColor = function () {
-    var eyesColor = EYES_COLOR[window.utils.getRandomArrayElement(EYES_COLOR)];
+    eyesColor = EYES_COLOR[window.utils.getRandomArrayElement(EYES_COLOR)];
     setupWizardEyes.style.fill = eyesColor;
     inputWizardEyes.value = eyesColor;
     return eyesColor;

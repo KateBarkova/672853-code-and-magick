@@ -10,14 +10,14 @@
     return function () {
       onError('Произошла ошибка соединения');
     };
-  }
+  };
 
   var onXhrTimeout = function (onError, xhr) {
     return function () {
       xhr.timeout = LOAD_TIMEOUT;
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     };
-  }
+  };
 
   var onXhrUpLoad = function (xhr, onLoad, onError) {
     return function () {
@@ -27,20 +27,20 @@
         onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
     };
-  }
+  };
 
   var onLoadError = function () {
     window.backend.onError('Произошла ошибка соединения');
-  }
+  };
 
   var removeErrorMessage = function () {
     var errorMessage = document.querySelector('.error-message');
     errorMessage.remove();
-  }
+  };
 
-  window.callback = function(data) {
+  window.callback = function (data) {
     window.wizards = data;
-    window.renderWizards(wizards);
+    window.renderWizards(data);
   };
 
   window.backend = {
