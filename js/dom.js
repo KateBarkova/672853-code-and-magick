@@ -8,7 +8,7 @@
         form: document.querySelector('.setup-wizard-form'),
         template: document.querySelector('#similar-wizard-template'),
         similarList: document.querySelector('.setup-similar-list'),
-        setupSimilat: document.querySelector('.setup-similar')
+        setupSimilar: document.querySelector('.setup-similar')
       };
     },
 

@@ -55,28 +55,68 @@
     checkUserNameValidity(inputUserName);
   };
 
+  var coatColor;
+  var eyesColor;
+
+  var getRank = function (wizardItem) {
+    var rank = 0;
+
+    if (wizardItem.colorCoat === coatColor) {
+      rank += 2;
+    }
+    if (wizardItem.colorEyes === eyesColor) {
+      rank += 1;
+    }
+    return rank;
+  };
+
+  var namesComparator = function (left, right) {
+    if (left > right) {
+      return 1;
+    } else if (left < right) {
+      return -1;
+    } else {
+      return 0;
+    }
+  };
+
+  var updateWizards = function () {
+    window.renderWizards(window.wizards.sort(function (left, right) {
+      var rankDiff = getRank(right) - getRank(left);
+      if (rankDiff === 0) {
+        rankDiff = namesComparator(left.name, right.name);
+      }
+      return rankDiff;
+    }));
+  };
+
   var changeCoatColor = function () {
-    var coatColor = COAT_COLOR[window.utils.getRandomArrayElement(COAT_COLOR)];
+    coatColor = COAT_COLOR[window.utils.getRandomArrayElement(COAT_COLOR)];
     setupWizardCoat.style.fill = coatColor;
     inputWizardCoat.value = coatColor;
+    return coatColor;
   };
   var changeEyesColor = function () {
-    var eyesColor = EYES_COLOR[window.utils.getRandomArrayElement(EYES_COLOR)];
+    eyesColor = EYES_COLOR[window.utils.getRandomArrayElement(EYES_COLOR)];
     setupWizardEyes.style.fill = eyesColor;
     inputWizardEyes.value = eyesColor;
+    return eyesColor;
   };
   var changeFireballColor = function () {
     var fireballColor = FIREBALL_COLOR[window.utils.getRandomArrayElement(FIREBALL_COLOR)];
     setupFireball.style.background = fireballColor;
     inputFireball.value = fireballColor;
+    return fireballColor;
   };
 
-  var onCoatClick = function () {
-    changeCoatColor();
-  };
-  var onEyesClick = function () {
-    changeEyesColor();
-  };
+  var onCoatClick = window.debounce(function () {
+    coatColor = changeCoatColor();
+    updateWizards();
+  });
+  var onEyesClick = window.debounce(function () {
+    eyesColor = changeEyesColor();
+    updateWizards();
+  });
   var onFireballClick = function () {
     changeFireballColor();
   };
